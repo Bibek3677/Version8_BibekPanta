@@ -1,6 +1,5 @@
 'use strict';
 
-// Lab Task Tracker, Version 8 (Version 5 API + AI-assisted front-end features).
 // Serves the front end from /public and a JSON REST API under /api with
 // API-key authentication, consistent error responses, rate limiting,
 // request logging and a metrics endpoint. Integrates with Supabase

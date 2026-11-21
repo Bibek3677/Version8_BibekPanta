@@ -4,8 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lab Task Tracker</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Crect width=%2216%22 height=%2216%22 rx=%223%22 fill=%22%232f5d50%22/%3E%3Cpath d=%22M4 8.5l2.5 2.5L12 5%22 stroke=%22white%22 stroke-width=%222%22 fill=%22none%22/%3E%3C/svg%3E">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="v8/v8.css">
+  <link rel="stylesheet" href="v9/v9.css">
 </head>
 <body>
 
@@ -48,10 +50,17 @@
       <p id="form-error" class="form-error" role="alert" hidden></p>
     </section>
 
+    <!-- Version 9, use case 1: week planner (filled by v9/planner.js) -->
+    <section class="panel" id="planner" aria-labelledby="planner-heading"></section>
+
     <section class="panel" aria-labelledby="list-heading">
       <div class="list-bar">
         <h2 id="list-heading">Tasks</h2>
-        <button type="button" id="clear-done" class="link-button">Clear completed</button>
+        <div class="list-actions">
+          <!-- Version 9, use case 2: CSV export of the list as shown -->
+          <button type="button" id="export-csv" class="link-button">Export CSV</button>
+          <button type="button" id="clear-done" class="link-button">Clear completed</button>
+        </div>
       </div>
 
       <div class="toolbar">
@@ -151,7 +160,7 @@
   </dialog>
 
   <footer class="page-footer">
-    <p>ITC6250 Lab Exercise 8, Version 8. <span id="backend"></span></p>
+    <p>ITC6250 Lab Exercise 9, Version 9. <span id="backend"></span></p>
     <p class="footer-actions">
       <button type="button" id="shortcut-help" class="link-button">Keyboard shortcuts (?)</button>
       <button type="button" id="calendar-copy" class="link-button">Copy calendar feed link</button>
@@ -159,11 +168,15 @@
     </p>
   </footer>
 
-  <!-- Version 8 components (load before app.js, which uses them) -->
+  <!-- Components (classic scripts that define V8* / V9* globals). They run
+       first; the ES module below is deferred until the page has loaded. -->
   <script src="v8/due-label.js"></script>
   <script src="v8/dashboard.js"></script>
   <script src="v8/toast.js"></script>
   <script src="v8/shortcuts.js"></script>
-  <script src="app.js"></script>
+  <script src="v9/planner.js"></script>
+  <script src="v9/export.js"></script>
+  <!-- Version 9: the old 470-line app.js, split into ES modules in js/ -->
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>

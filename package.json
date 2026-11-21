@@ -1,6 +1,6 @@
 {
-  "name": "lab-task-tracker-v8",
-  "version": "8.0.0",
+  "name": "lab-task-tracker-v9",
+  "version": "9.0.0",
   "description": "ITC6250 Lab Exercise 8: AI-assisted Version 8 of the Lab Task Tracker (Lab 5 REST API with authentication, logging, Supabase, public-holiday and calendar integrations, plus a progress dashboard, due-date labels, undoable delete and keyboard shortcuts).",
   "main": "server.js",
   "private": true,
