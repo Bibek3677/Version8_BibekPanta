@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab Task Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="v8/v8.css">
+</head>
+<body>
+
+  <header class="page-header">
+    <h1>Lab Task Tracker</h1>
+    <p class="subtitle">Your tasks are saved in a database, so they're still here next time you open the page.</p>
+    <p class="summary" id="summary" aria-live="polite"></p>
+  </header>
+
+  <main>
+    <!-- Version 8, use case 1: progress dashboard (filled by v8/dashboard.js) -->
+    <section class="panel" id="dashboard" aria-label="Progress"></section>
+
+    <section class="panel" aria-labelledby="add-heading">
+      <h2 id="add-heading">Add a task</h2>
+
+      <form id="task-form" class="task-form" novalidate>
+        <div class="field field-wide">
+          <label for="task-title">Task</label>
+          <input type="text" id="task-title" maxlength="120" autocomplete="off" placeholder="What needs doing?" required>
+        </div>
+        <div class="field">
+          <label for="task-course">Course</label>
+          <select id="task-course" class="course-select"></select>
+        </div>
+        <div class="field">
+          <label for="task-due">Due</label>
+          <input type="date" id="task-due">
+        </div>
+        <div class="field">
+          <label for="task-priority">Priority</label>
+          <select id="task-priority">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+        <button type="submit" class="primary">Add task</button>
+      </form>
+      <p id="form-error" class="form-error" role="alert" hidden></p>
+    </section>
+
+    <section class="panel" aria-labelledby="list-heading">
+      <div class="list-bar">
+        <h2 id="list-heading">Tasks</h2>
+        <button type="button" id="clear-done" class="link-button">Clear completed</button>
+      </div>
+
+      <div class="toolbar">
+        <div class="filters" role="group" aria-label="Filter by status">
+          <button type="button" class="filter is-active" data-status="all" aria-pressed="true">All</button>
+          <button type="button" class="filter" data-status="open" aria-pressed="false">Open</button>
+          <button type="button" class="filter" data-status="overdue" aria-pressed="false">Overdue</button>
+          <button type="button" class="filter" data-status="done" aria-pressed="false">Done</button>
+        </div>
+        <div class="toolbar-row">
+          <label class="visually-hidden" for="filter-course">Filter by course</label>
+          <select id="filter-course"></select>
+          <label class="visually-hidden" for="sort">Sort tasks</label>
+          <select id="sort">
+            <option value="due">Sort by due date</option>
+            <option value="priority">Sort by priority</option>
+            <option value="newest">Newest first</option>
+          </select>
+          <label class="visually-hidden" for="search">Search tasks</label>
+          <input type="search" id="search" placeholder="Search" maxlength="100">
+        </div>
+      </div>
+
+      <ul id="task-list" class="task-list" aria-live="polite"></ul>
+      <p id="empty-state" class="empty-state" hidden></p>
+    </section>
+
+    <section class="panel" aria-labelledby="course-heading">
+      <h2 id="course-heading">Courses</h2>
+      <ul id="course-list" class="course-list"></ul>
+      <form id="course-form" class="course-form" novalidate>
+        <div class="field">
+          <label for="course-code">Code</label>
+          <input type="text" id="course-code" maxlength="20" placeholder="ITC6250" autocomplete="off">
+        </div>
+        <div class="field field-wide">
+          <label for="course-name">Name</label>
+          <input type="text" id="course-name" maxlength="100" placeholder="Course name" autocomplete="off">
+        </div>
+        <button type="submit">Add course</button>
+      </form>
+      <p id="course-error" class="form-error" role="alert" hidden></p>
+    </section>
+  </main>
+
+  <dialog id="edit-dialog" aria-labelledby="edit-heading">
+    <form id="edit-form" novalidate>
+      <h2 id="edit-heading">Edit task</h2>
+      <div class="field">
+        <label for="edit-title">Task</label>
+        <input type="text" id="edit-title" maxlength="120" required>
+      </div>
+      <div class="field">
+        <label for="edit-notes">Notes</label>
+        <textarea id="edit-notes" rows="3" maxlength="1000"></textarea>
+      </div>
+      <div class="dialog-grid">
+        <div class="field">
+          <label for="edit-course">Course</label>
+          <select id="edit-course" class="course-select"></select>
+        </div>
+        <div class="field">
+          <label for="edit-due">Due</label>
+          <input type="date" id="edit-due">
+        </div>
+        <div class="field">
+          <label for="edit-priority">Priority</label>
+          <select id="edit-priority">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+      </div>
+      <label class="check-row"><input type="checkbox" id="edit-done"> Completed</label>
+      <p id="edit-error" class="form-error" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button type="button" id="edit-cancel">Cancel</button>
+        <button type="submit" class="primary">Save changes</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="key-dialog" aria-labelledby="key-heading">
+    <form id="key-form" novalidate>
+      <h2 id="key-heading">Enter your API key</h2>
+      <p class="dialog-note">The API is protected by a key. Use the API_KEY value from your .env file, or the temporary key printed in the terminal when the server started.</p>
+      <div class="field">
+        <label for="key-input">API key</label>
+        <input type="password" id="key-input" autocomplete="off" required>
+      </div>
+      <p id="key-error" class="form-error" role="alert" hidden></p>
+      <div class="dialog-actions">
+        <button type="submit" class="primary">Continue</button>
+      </div>
+    </form>
+  </dialog>
+
+  <footer class="page-footer">
+    <p>ITC6250 Lab Exercise 8, Version 8. <span id="backend"></span></p>
+    <p class="footer-actions">
+      <button type="button" id="shortcut-help" class="link-button">Keyboard shortcuts (?)</button>
+      <button type="button" id="calendar-copy" class="link-button">Copy calendar feed link</button>
+      <button type="button" id="forget-key" class="link-button">Change API key</button>
+    </p>
+  </footer>
+
+  <!-- Version 8 components (load before app.js, which uses them) -->
+  <script src="v8/due-label.js"></script>
+  <script src="v8/dashboard.js"></script>
+  <script src="v8/toast.js"></script>
+  <script src="v8/shortcuts.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+/* Version 8 components. Colours are custom properties, pointed at the
+   existing styles.css palette (with the original values as fallbacks). */
+:root {
+  --v8-ink: var(--ink, #1d2433);
+  --v8-muted: var(--muted, #5b6475);
+  --v8-line: var(--line, #d9dde5);
+  --v8-surface: var(--surface, #ffffff);
+  --v8-accent: var(--accent, #2f5d9b);
+  --v8-overdue: var(--danger, #b42318);
+  --v8-overdue-bg: var(--danger-soft, #fdecea);
+  --v8-soon: var(--warn, #8a4b00);
+  --v8-soon-bg: #fff3dc;
+  --v8-urgent: #7a3e00;
+  --v8-urgent-bg: #fde3b5;
+  --v8-ok: #24704a;
+  --v8-ok-bg: #e5f4ec;
+  --v8-radius: 6px;
+}
+
+.v8-btn {
+  font: inherit;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--v8-line);
+  border-radius: var(--v8-radius);
+  background: var(--v8-surface);
+  color: var(--v8-ink);
+  cursor: pointer;
+}
+.v8-btn:hover { border-color: var(--v8-accent); }
+.v8-btn:focus-visible,
+.v8-toast button:focus-visible { outline: 2px solid var(--v8-accent); outline-offset: 2px; }
+
+/* Use case 2: due-date labels */
+.v8-due {
+  display: inline-block;
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--v8-muted);
+  background: transparent;
+  border: 1px solid var(--v8-line);
+}
+.v8-due--overdue { color: #fff;               background: var(--v8-overdue);   border-color: var(--v8-overdue); }
+.v8-due--urgent  { color: var(--v8-urgent);  background: var(--v8-urgent-bg); border-color: transparent; }
+.v8-due--soon    { color: var(--v8-soon);    background: transparent;         border-color: currentColor; }
+.v8-due--done    { color: var(--v8-ok);      background: var(--v8-ok-bg);     border-color: transparent; }
+
+/* Use case 1: progress dashboard */
+.v8-dash { color: var(--v8-ink); }
+.v8-dash__head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.v8-dash__title { margin: 0; }
+.v8-dash__pct { margin: 0; color: var(--v8-muted); }
+.v8-dash__status { margin: 0.5rem 0 0; color: var(--v8-muted); }
+.v8-dash__status--error { color: var(--v8-overdue); }
+
+.v8-dash__figures {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0.9rem 0 0;
+  border-top: 1px solid var(--v8-line);
+  border-bottom: 1px solid var(--v8-line);
+}
+.v8-dash__figure { padding: 0.6rem 0.75rem; }
+.v8-dash__figure + .v8-dash__figure { border-left: 1px solid var(--v8-line); }
+.v8-dash__figure dt { font-size: 0.85rem; color: var(--v8-muted); }
+.v8-dash__figure dd { margin: 0.1rem 0 0; font-size: 1.75rem; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.v8-dash__figure--soon dd { color: var(--v8-soon); }
+.v8-dash__figure--overdue dd { color: var(--v8-overdue); }
+
+.v8-dash__courses { list-style: none; margin: 0.9rem 0 0; padding: 0; display: grid; gap: 0.6rem; }
+.v8-dash__course {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "code count" "bar bar";
+  gap: 0.25rem 1rem;
+}
+.v8-dash__code { grid-area: code; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.v8-dash__count { grid-area: count; color: var(--v8-muted); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+.v8-bar { grid-area: bar; display: block; height: 0.5rem; border-radius: 999px; background: var(--v8-line); overflow: hidden; }
+.v8-bar__fill { display: block; height: 100%; background: var(--v8-accent); border-radius: inherit; }
+
+@media (max-width: 520px) {
+  .v8-dash__figures { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .v8-dash__figure:nth-child(3) { border-left: 0; }
+  .v8-dash__figure:nth-child(n + 3) { border-top: 1px solid var(--v8-line); }
+}
+
+/* Use case 3: toasts and undoable delete */
+.v8-is-hidden { display: none !important; }
+.v8-toasts {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  width: min(28rem, calc(100% - 2rem));
+  display: grid;
+  gap: 0.5rem;
+  z-index: 1000;
+}
+.v8-toast {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.65rem 0.65rem 1rem;
+  border-radius: var(--v8-radius);
+  background: var(--v8-ink);
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(29, 36, 51, 0.25);
+}
+.v8-toast--error { background: var(--v8-overdue); }
+.v8-toast__msg { flex: 1; }
+.v8-toast button { font: inherit; background: none; border: 0; color: inherit; cursor: pointer; border-radius: var(--v8-radius); }
+.v8-toast__action { font-weight: 700; text-decoration: underline; padding: 0.25rem 0.5rem; }
+.v8-toast__close { font-size: 1.25rem; line-height: 1; padding: 0.25rem 0.5rem; opacity: 0.8; }
+.v8-toast__close:hover { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) {
+  .v8-toast { animation: v8-toast-in 160ms ease-out; }
+  @keyframes v8-toast-in { from { opacity: 0; transform: translateY(0.5rem); } }
+}
+
+/* Use case 4: shortcuts help */
+.v8-help {
+  max-width: 24rem;
+  width: calc(100% - 2rem);
+  border: 1px solid var(--v8-line);
+  border-radius: var(--v8-radius);
+  padding: 1.25rem 1.5rem;
+  color: var(--v8-ink);
+  background: var(--v8-surface);
+}
+.v8-help::backdrop { background: rgba(29, 36, 51, 0.4); }
+.v8-help h2 { margin: 0 0 0.75rem; font-size: 1.15rem; }
+.v8-help__list { margin: 0 0 1rem; display: grid; gap: 0.4rem; }
+.v8-help__list div { display: grid; grid-template-columns: 3.5rem 1fr; align-items: center; }
+.v8-help__list dd { margin: 0; }
+.v8-help kbd {
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.1rem 0.45rem;
+  border: 1px solid var(--v8-line);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: #f6f7f9;
+}
